@@ -1,5 +1,5 @@
 # Implementation-of-Soft-Actor-Critic-algorithm
-This is an implementation of the SAC reinforcement-learning algorithm on the OpenAI Gym introduced by Tuomas Haarnoja et. al.: Soft Actor-Critic: Off-Policy Maximum Entropy Deep Reinforcement Learning with a Stochastic Actor (2018).
+This is an implementation of the SAC reinforcement-learning algorithm introduced by Tuomas Haarnoja et. al.: Soft Actor-Critic: Off-Policy Maximum Entropy Deep Reinforcement Learning with a Stochastic Actor (2018). The SAC algorithm is used to train a model on the OpenAI Gym.
 
 
 
