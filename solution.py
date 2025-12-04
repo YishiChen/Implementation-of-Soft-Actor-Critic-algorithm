@@ -26,9 +26,8 @@ class NeuralNetwork(nn.Module):
                                 hidden_layers: int, activation: str):
         super(NeuralNetwork, self).__init__()
 
-        # TODO: Implement this function which should define a neural network 
+        # Defining a neural network 
         # with a variable number of hidden layers and hidden units.
-        # Here you should define layers which your network will use.
         act_fn = getattr(nn, activation)() 
         layers = [nn.Linear(input_dim,hidden_size),act_fn]
         for _ in range(hidden_layers):
@@ -38,7 +37,6 @@ class NeuralNetwork(nn.Module):
         self.model = nn.Sequential(*layers)         
 
     def forward(self, s: torch.Tensor) -> torch.Tensor:
-        # TODO: Implement the forward pass for the neural network you have defined.
         return self.model(s)
     
 class Actor:
@@ -60,9 +58,6 @@ class Actor:
         '''
         This function sets up the actor network in the Actor class.
         '''
-        # TODO: Implement this function which sets up the actor network. 
-        # Take a look at the NeuralNetwork class in utils.py. 
-        # return a mean and a log std parameter
         self.network = NeuralNetwork(self.state_dim, 2, self.hidden_size, self.hidden_layers, "ReLU")
         self.optimizer = optim.Adam(self.network.parameters(), lr=self.actor_lr)
         # to avoid numerical errors when taking the log
@@ -88,9 +83,6 @@ class Actor:
         '''
         assert state.shape == (3,) or state.shape[1] == self.state_dim, 'State passed to this method has a wrong shape'
         action , log_prob = torch.zeros(state.shape[0]), torch.ones(state.shape[0])
-        # TODO: Implement this function which returns an action and its log probability.
-        # If working with stochastic policies, make sure that its log_std are clamped 
-        # using the clamp_log_std function.  
         # get out output from model  
         out = self.network(state)
         # retrieve policy distribution parameters from the output
@@ -131,8 +123,6 @@ class Critic:
         self.setup_critic()
 
     def setup_critic(self):
-        # TODO: Implement this function which sets up the critic(s). Take a look at the NeuralNetwork 
-        # class in utils.py. Note that you can have MULTIPLE critic networks in this class.
         import copy
         # initialize the first Q-function
         self.q1 = NeuralNetwork(self.state_dim+self.action_dim, 1, self.hidden_size, self.hidden_layers, "ReLU")
@@ -181,9 +171,8 @@ class Agent:
         self.setup_agent()
 
     def setup_agent(self):
-        # TODO: Setup off-policy agent with policy and critic classes. 
-        # Feel free to instantiate any other parameters you feel you might need. 
-        
+        # Setup off-policy agent with policy and critic classes. 
+                
         # define parameters for the actor=policy
         policy_hidden_size = 256
         policy_hidden_layers = 2
@@ -210,7 +199,6 @@ class Agent:
                     You can find it useful if you want to sample from deterministic policy.
         :return: np.ndarray,, action to apply on the environment, shape (1,)
         """
-        # TODO: Implement a function that returns an action from the policy for the state s.
         # convert state to torch.tensor and reshape
         state = torch.from_numpy(s).unsqueeze(0)
 
@@ -257,15 +245,12 @@ class Agent:
         from the replay buffer,and then updates the policy and critic networks 
         using the sampled batch.
         '''
-        # TODO: Implement one step of training for the agent.
-        # Hint: You can use the run_gradient_update_step for each policy and critic.
-        # Example: self.run_gradient_update_step(self.policy, policy_loss)
 
         # Batch sampling
         batch = self.memory.sample(self.batch_size)
         s_batch, a_batch, r_batch, s_prime_batch = batch
         
-        # TODO: Implement Critic(s) update here.
+        # Critic(s) update here.
         # get alpha 
         alpha = self.alpha.get_param()
 
@@ -301,7 +286,7 @@ class Agent:
         q2_loss.backward()
         self.critic.q2_opt.step()
 
-        # TODO: Implement Policy update here
+        # Policy update
         # compute log pi(a|s)
         # sample actions a_t via reparameterization (done implicitly in the get_action_and_log_prob function)
         a_batch_new, log_prob = self.policy.get_action_and_log_prob(s_batch, False)
@@ -336,8 +321,8 @@ class Agent:
 # This main function is provided here to enable some basic testing. 
 # ANY changes here WON'T take any effect while grading.
 if __name__ == '__main__':
-    TRAIN_EPISODES = 5 # 50
-    TEST_EPISODES = 10 # 300
+    TRAIN_EPISODES = 50 # 50
+    TEST_EPISODES = 300 # 300
 
     # You may set the save_video param to output the video of one of the evalution episodes, or 
     # you can disable console printing during training and testing by setting verbose to False.
